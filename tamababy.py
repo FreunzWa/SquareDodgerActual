@@ -3,8 +3,9 @@ import random
 import math
 import time
 pygame.init()
-d_width = 960
-d_height = 960
+d_width = 760
+
+d_height = 640
 displayResolution = (d_width,d_height)
 wn = pygame.display.set_mode(displayResolution)
 gameRunning = True
@@ -17,12 +18,12 @@ baddySpeed = 1
 
 
 class Player:
-	def __init__(self, x,y, speed = 10):
+	def __init__(self, x,y, speed = 8):
 		self.x = x
 		self.y = y
 		self.speed = speed
-		self.width = 64
-		self.height = 64
+		self.width = 32
+		self.height = 32
 		self.sprite = pygame.Surface((self.width,self.height))
 		
 		
@@ -42,7 +43,7 @@ class Player:
 	def check_collision(self, obj):
 		global gameRunning
 		if (self.x + self.width > obj.x and self.x < obj.x + obj.width) and (self.y + self.height > obj.y and self.y < obj.y + obj.height):
-			score  =str(time.time() - start_time)
+			score = (time.time() - start_time)
 			print("You lasted " + str(score))
 			if score < 10:
 				print("Sorry, but you are extremely bad at this game. You need to practise for at least a year to get better.")
@@ -64,19 +65,19 @@ class Baddy:
 		self.x = 0
 		self.y = 0
 		
-		self.width = 32
-		self.height = 32
+		self.width = 16
+		self.height = 16
 		self.speed = speed
 		self.dir = random.randrange(0,360)
 		baddyList.append(self)
-		self.sprite = pygame.Surface((32,32))
+		self.sprite = pygame.Surface((self.width,self.height))
 	def draw(self):
-		pygame.draw.rect(self.sprite, RED, (0,0,32,32))
+		pygame.draw.rect(self.sprite, RED, (0,0,self.width,self.height))
 		wn.blit(self.sprite, (self.x, self.y))
 	def move(self):
-		if self.x < 0 or self.x> d_height:
+		if self.x < 0 or self.x> d_width:
 			self.dir  = (180-self.dir)
-		if self.y < 0 or self.y> d_width:
+		if self.y < 0 or self.y> d_height:
 			self.dir  = (360-self.dir)
 		self.x += math.cos(self.dir*(math.pi/180))*self.speed
 		self.y += math.sin(self.dir*(math.pi/180))*self.speed
@@ -92,7 +93,8 @@ if __name__ == "__main__":
 		clock.tick(60)
 		if timer>0:
 			timer-=1
-		if timer ==0:
+		if timer ==0 and len(baddyList) < 14:
+                        
 			baddy = Baddy(baddySpeed)
 
 			timer = 60
